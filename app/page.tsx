@@ -1,6 +1,8 @@
+"use client"
 import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Booking from "../components/Booking/Booking";
+import MapBoxMap from "../components/Map/MapBoxMap";
 
 export default function Home() {
   return (
@@ -10,7 +12,7 @@ export default function Home() {
           <Booking />
         </div>
         <div className='col-span-2 bg-blue-300'>
-          map
+          <MapBoxMap/>
         </div>
       </div>
     </div>
