@@ -2,11 +2,15 @@
 import React, { useEffect, useState } from 'react'
 
 function AutocompleteAddress() {
+    const session_token = '5ccc4a4-ab0a-4a7c-943d-580e55542363'
+    const MAPBOX_RETRIVE_URL='https://api.mapbox.com/search/searchbox/v1/retrieve/'
     const [source, setSource] = useState<any>('')
+    const [sourceChange,setSourceChange]=useState<any>(false)
     const [addressList, setAddressList] = useState<any>([])
-    const [destination, setDestination] = useState<any>('') 
-    const [destinationList, setDestinationList] = useState<any>([])
+    const [destinationChange, setDestinationChange] = useState<any>(false)
 
+    const [destination, setDestination] = useState<any>()
+    
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             getAddressList(source, setAddressList)
@@ -16,7 +20,7 @@ function AutocompleteAddress() {
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
-            getAddressList(destination, setDestinationList)
+            getAddressList(destination, setDestinationChange)
         }, 1000)
         return () => clearTimeout(delayDebounceFn)
     }, [destination])
@@ -32,7 +36,14 @@ function AutocompleteAddress() {
             }
         })
         const result = await res.json()
-        setList(result)
+        setAddressList(result)//i've changed this setList to setAddress list 25-2-25
+    }
+    const onSourceAddressClick=async(item:any)=>{
+        setSource(item.full_address);
+        setAddressList([]);setSourceChange(false)
+        const res=await fetch(MAPBOX_RETRIVE_URL+item.mapbox_id+"?session_token="+session_token+"&access_token"+process.env.NEXT_PUBLIC_MAP_ACCESS_TOKEN)
+        const result = await res.json()
+        console.log(result)
     }
 
     return (
@@ -49,7 +60,7 @@ function AutocompleteAddress() {
                     <div className='shadow-md p-2 absolute rounded-md bg-white mt-2'>
                         {addressList.suggestions.map((item: any, index: number) => (
                             <h2 key={`source-${item.id || index}`} className='hover:bg-blue-200 cursor-pointer'
-                                onClick={() => { setSource(item.full_address); setAddressList([]) }}
+                                onClick={() => {onSourceAddressClick(item) }}
                             >{item.full_address}</h2>
                         ))}
                     </div>
@@ -62,11 +73,11 @@ function AutocompleteAddress() {
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
                 />
-                {destinationList?.suggestions ? (
+                {destinationChange?.suggestions ? (
                     <div className='shadow-md p-2 absolute rounded-md bg-white mt-2'>
-                        {destinationList.suggestions.map((item: any, index: number) => (
+                        {destinationChange.suggestions.map((item: any, index: number) => (
                             <h2 key={`destination-${item.id || index}`} className='hover:bg-blue-200 cursor-pointer'
-                                onClick={() => { setDestination(item.full_address); setDestinationList([]) }}
+                                onClick={() => { setDestination(item.full_address); setDestinationChange([]) }}
                             >{item.full_address}</h2>
                         ))}
                     </div>
