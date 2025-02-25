@@ -10,7 +10,9 @@ function Cards() {
         <h2 className='text-[16px] font-medium mt-2'>Payment Method</h2>
         <div className='grid grid-cols-5 mt-2 l-2'>
             {CardsList.map((item,index) =>(
-            <div className={`w-[50px] border-[1px] flex items-center justify-center
+            <div 
+            key={index} 
+            className={`w-[50px] border-[1px] flex items-center justify-center
             rounded-md
             cursor-pointer
             hover:scale-150 tansition-all

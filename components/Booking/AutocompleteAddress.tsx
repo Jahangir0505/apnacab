@@ -1,32 +1,38 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { SourceCordiContext } from '../../context/SourceCordiContext'
+import { DestiCordiContext } from '../../context/DestiCordiContext'
 
 function AutocompleteAddress() {
     const session_token = '5ccc4a4-ab0a-4a7c-943d-580e55542363'
-    const MAPBOX_RETRIVE_URL='https://api.mapbox.com/search/searchbox/v1/retrieve/'
-    const [source, setSource] = useState<any>('')
-    const [sourceChange,setSourceChange]=useState<any>(false)
-    const [addressList, setAddressList] = useState<any>([])
-    const [destinationChange, setDestinationChange] = useState<any>(false)
+    const MAPBOX_RETRIVE_URL = 'https://api.mapbox.com/search/searchbox/v1/retrieve/'
+    const [source, setSource] = useState<string>('')
+    const [sourceChange, setSourceChange] = useState<boolean>(false)
 
-    const [destination, setDestination] = useState<any>()
-    
+    const { sourceCordinates, setSourceCordinates } = useContext(SourceCordiContext);
+    const { destinationCordinates, setDestinationCordinates } = useContext(DestiCordiContext);
+    const [sourceAddressList, setSourceAddressList] = useState<any>([])
+    const [destinationAddressList, setDestinationAddressList] = useState<any>([])
+    const [destinationChange, setDestinationChange] = useState<boolean>(false)
+
+    const [destination, setDestination] = useState<string>('')
+
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
-            getAddressList(source, setAddressList)
+            getAddressList(source, setSourceAddressList)
         }, 1000)
         return () => clearTimeout(delayDebounceFn)
     }, [source])
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
-            getAddressList(destination, setDestinationChange)
+            getAddressList(destination, setDestinationAddressList)
         }, 1000)
         return () => clearTimeout(delayDebounceFn)
     }, [destination])
 
     const getAddressList = async (query: string, setList: React.Dispatch<React.SetStateAction<any[]>>) => {
-        if (query.trim() === '') {
+        if (!query || query.trim() === '') {
             setList([]); // Clear suggestions if input is empty
             return; // Exit the function if no input
         }
@@ -36,13 +42,32 @@ function AutocompleteAddress() {
             }
         })
         const result = await res.json()
-        setAddressList(result)//i've changed this setList to setAddress list 25-2-25
+        setList(result.suggestions || []); // Use setList to update the address list
     }
-    const onSourceAddressClick=async(item:any)=>{
+
+    const onSourceAddressClick = async (item: any) => {
         setSource(item.full_address);
-        setAddressList([]);setSourceChange(false)
-        const res=await fetch(MAPBOX_RETRIVE_URL+item.mapbox_id+"?session_token="+session_token+"&access_token"+process.env.NEXT_PUBLIC_MAP_ACCESS_TOKEN)
+        setSourceAddressList([]);
+        setSourceChange(false);
+        const res = await fetch(`${MAPBOX_RETRIVE_URL}${item.mapbox_id}?session_token=${session_token}&access_token=${process.env.NEXT_PUBLIC_MAP_ACCESS_TOKEN}`)
         const result = await res.json()
+        setSourceCordinates({
+            lng: result.features[0].geometry.coordinates[0],
+            lat: result.features[0].geometry.coordinates[1]
+        })
+        console.log(result)
+    }
+
+    const onDestinationAddressClick = async (item: any) => {
+        setDestination(item.full_address);
+        setDestinationAddressList([]);
+        setDestinationChange(false);
+        const res = await fetch(`${MAPBOX_RETRIVE_URL}${item.mapbox_id}?session_token=${session_token}&access_token=${process.env.NEXT_PUBLIC_MAP_ACCESS_TOKEN}`)
+        const result = await res.json()
+        setDestinationCordinates({
+            lng: result.features[0].geometry.coordinates[0],
+            lat: result.features[0].geometry.coordinates[1]
+        })
         console.log(result)
     }
 
@@ -56,15 +81,15 @@ function AutocompleteAddress() {
                     value={source}
                     onChange={(e) => setSource(e.target.value)}
                 />
-                {addressList?.suggestions ? (
+                {sourceAddressList.length > 0 && (
                     <div className='shadow-md p-2 absolute rounded-md bg-white mt-2'>
-                        {addressList.suggestions.map((item: any, index: number) => (
+                        {sourceAddressList.map((item: any, index: number) => (
                             <h2 key={`source-${item.id || index}`} className='hover:bg-blue-200 cursor-pointer'
-                                onClick={() => {onSourceAddressClick(item) }}
+                                onClick={() => { onSourceAddressClick(item) }}
                             >{item.full_address}</h2>
                         ))}
                     </div>
-                ) : null}
+                )}
             </div>
             <div className='relative mb-20'>
                 <label className='text-black-300 text-[20px]'>To</label>
@@ -73,15 +98,15 @@ function AutocompleteAddress() {
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
                 />
-                {destinationChange?.suggestions ? (
+                {destinationAddressList.length > 0 && (
                     <div className='shadow-md p-2 absolute rounded-md bg-white mt-2'>
-                        {destinationChange.suggestions.map((item: any, index: number) => (
+                        {destinationAddressList.map((item: any, index: number) => (
                             <h2 key={`destination-${item.id || index}`} className='hover:bg-blue-200 cursor-pointer'
-                                onClick={() => { setDestination(item.full_address); setDestinationChange([]) }}
+                                onClick={() => { onDestinationAddressClick(item) }}
                             >{item.full_address}</h2>
                         ))}
                     </div>
-                ) : null}
+                )}
             </div>
         </div>
     )
