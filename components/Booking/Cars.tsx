@@ -15,16 +15,17 @@ function Cars() {
     }
     
   return (
-    <div className='-mt-10'>
-        <h2 className='font-semibold mt-5'>Select Car</h2>
+    <div style={{ marginTop: '-4.5rem' }}>
+        <h2 className='font-semibold'>Select Car</h2>
         <div className='grid grid-cols-3 md:grid-cols-2
         lg:grid-cols-3'>
             {CarsList.map((item,index)=>
             item && (
                 <div key={index} 
                 className={`m-2 p-2
-                border-[1px] rounded-md hover:border-yellow-500
-                cursor-pointer ${index==selectedCar?'border-[3px] border-yellow-500'
+                border-[1px] rounded-md hover:border-yellow-500 
+                cursor-pointer
+                hover:scale-125 transition-all ${index==selectedCar?'border-[3px] border-yellow-500'
                 :null}`}
                 onClick={()=>{setSelectedCar(index);
                     setCarAmount(getCost(item.charges))}}>

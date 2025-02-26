@@ -55,7 +55,7 @@ function MapboxMap() {
 
     return (
     <div className='p-5'>
-      <h2 className='text-[20px] font-semibold'>Map</h2>
+      <h2 className='text-[25px] font-semibold'>Map</h2>
       <div className='rounded-lg overflow-hidden'>
         {userLocation ?<Map
         ref={mapRef}

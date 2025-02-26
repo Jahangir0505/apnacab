@@ -72,7 +72,7 @@ function AutocompleteAddress() {
     }
 
     return (
-        <div className='mt-5'>
+        <div className='m'>
             <div className='relative'>
                 <label className='text-black-300 text-[20px]'>From</label>
                 <input type="text"
