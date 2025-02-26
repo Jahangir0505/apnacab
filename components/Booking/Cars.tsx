@@ -1,10 +1,16 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Image from 'next/image'
 import CarsList from '../../data/CarsList'
+import { DirectionDataContext } from '../../context/DirectionDataContext'
 
 function Cars() {
     const [selectedCar,setSelectedCar]=useState<any>()
+    const { directionData,setDirectionData} = useContext(DirectionDataContext);
+    const getCost=(charges:any)=>{
+        return (charges*directionData.routes[0].distance*0.001).toFixed(2);
+    }
+    
   return (
     <div className='-mt-10'>
         <h2 className='font-semibold mt-5'>Select Car</h2>
@@ -22,8 +28,10 @@ function Cars() {
                     width={75}
                     height={90}
                     className='w-full'/>
-                    <h2 className='text-[12px]'>{item.name}</h2>
-                    <span className='float-left font-medium'>Rs {item.charges*200}</span>
+                    <h2 className='text-[12px]'>{item.name}
+                    {directionData.routes?
+                    <span className='float-right font-medium'>Rs {getCost(item.charges)}
+                    </span>:null}</h2>
                 </div>
             ))}
         </div>

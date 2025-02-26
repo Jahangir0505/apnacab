@@ -8,6 +8,7 @@ import { DestiCordiContext } from '../../context/DestiCordiContext';
 import { SourceCordiContext } from '../../context/SourceCordiContext';
 import { DirectionDataContext } from '../../context/DirectionDataContext';
 import MapBoxRoute from './MapBoxRoute';
+import DistanceTime from './DistanceTime';
 
 function MapboxMap() {
   const MAPBOX_DRIVING_ENDPOINT='https://api.mapbox.com/directions/v5/mapbox/driving/'
@@ -54,7 +55,7 @@ function MapboxMap() {
 
     return (
     <div className='p-5'>
-      <h2 className='text-2[20px] font-semibold'>Maping</h2>
+      <h2 className='text-[20px] font-semibold'>Map</h2>
       <div className='rounded-lg overflow-hidden'>
         {userLocation ?<Map
         ref={mapRef}
@@ -72,6 +73,9 @@ function MapboxMap() {
             coordinates={directionData?.routes[0]?.geometry?.coordinates}/>
           ):null}
         </Map> : null}
+      </div>
+      <div className="absolute bottom-[40px] z-20 right-[20px] hidden md:block">
+        <DistanceTime/>
       </div>
     </div>
   )

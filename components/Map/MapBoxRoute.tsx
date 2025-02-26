@@ -7,7 +7,8 @@ function MapBoxRoute(props:any) {
     data={{
         type:'Feature',
         geometry:
-        {type:'LineString', coordinates: props.coordinates}}}>
+        {type:'LineString', coordinates: props.coordinates},
+        properties:{}}}>
     <Layer
     type='line'
     layout={{'line-join':'round','line-cap':'square'}}
