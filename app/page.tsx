@@ -8,6 +8,7 @@ import { UserLocationContext } from "../context/UserLocationContext";
 import { SourceCordiContext } from "../context/SourceCordiContext";
 import { DestiCordiContext } from "../context/DestiCordiContext";
 import { DirectionDataContext } from "../context/DirectionDataContext";
+import { selectedCarAmountContext } from "../context/selectedCarAmountContext";
 
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
   const [destinationCordinates,setDestinationCordinates]=useState<any>([])
   const [directionData,setDirectionData]=useState<any>([])
   const [userLocation,setUserLocation]=useState<any>();
+  const [carAmount,setCarAmount]=useState<any>() 
   useEffect(()=>{
     getUserLocation();
   },[])
@@ -32,6 +34,7 @@ export default function Home() {
         <SourceCordiContext.Provider value={{sourceCordinates,setSourceCordinates}}>
         <DestiCordiContext.Provider value={{destinationCordinates,setDestinationCordinates}}>
           <DirectionDataContext.Provider value={{ directionData,setDirectionData}}> 
+            <selectedCarAmountContext.Provider value={{carAmount,setCarAmount}}>
      <div className='grid grid-cols-1 md:grid-cols-3'>
         <div className='bg-yellow-300'>
           <Booking />
@@ -40,6 +43,7 @@ export default function Home() {
           <MapboxMap/>
         </div>
       </div>
+            </selectedCarAmountContext.Provider>
           </DirectionDataContext.Provider>
         </DestiCordiContext.Provider>
       </SourceCordiContext.Provider>
