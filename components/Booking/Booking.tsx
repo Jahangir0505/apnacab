@@ -18,8 +18,8 @@ function Booking() {
                     <Cars/>
                     <Cards/>
                     <button className={`w-full
-                    bg-yellow-400 p-1 rounded-md mt-3
-                     ${!carAmount?'bg-gray-300 hover:bg-gray-400 hover:scale-110':null}`} 
+                    bg-gray-400 p-1 rounded-md mt-3
+                     ${!carAmount?'bg-gray-300 hover:bg-yellow-400 hover:scale-110':null}`} 
                      disabled={!carAmount}
                     onClick={()=>router.push('/Payment')}>Book</button>
             </div>
